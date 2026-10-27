@@ -1,0 +1,112 @@
+type PageInfo {
+  total_count: Int
+}
+
+type IMEI {
+  imei: String
+  isPrimary: Boolean
+}
+
+type State {
+  id: Int!
+  name: String
+}
+
+type Policy {
+  id: ID!
+  name: String
+  color: String
+}
+
+type ServiceType {
+  id: ID
+  name: String
+  label: String
+}
+
+type Device {
+  id: ID!
+  serialNumber: String
+  IMEIs: [IMEI]
+  modelMarketingName: String
+  brandName: String
+  policy: Policy!
+  serviceType: ServiceType!
+  state: State
+  lastCheckin: String
+  lastChanged: String
+}
+
+type DeviceList {
+  pageInfo: PageInfo
+  deviceList: [Device]
+}
+
+type LastCheckIn {
+  label: String
+  date: String
+  color: String
+}
+
+type DeviceDetail {
+  id: ID!
+  serialNumber: String
+  deviceBrandName: String
+  deviceModelMarketingName: String
+  IMEIs: [IMEI]
+  imsi: String
+  locale: String
+  state: State
+  policy: Policy
+  serviceType: ServiceType
+  lastCheckin: LastCheckIn
+  firstEnrollAt: String
+}
+
+type History {
+  type: String
+  createdAt: String
+  email: String
+  policyName: String
+  nextPolicyName: String
+  actionName: String
+}
+
+type DeviceHistories {
+  histories: [History]
+  pageInfo: PageInfo
+}
+
+type Action {
+  id: String!
+  actionName: String
+  policyName: String
+  stateId: Int
+  serviceName: String
+}
+
+type Query {
+  listDevices(
+    tenantId: String
+    imei: String
+    serialNumber: String
+    stateId: Int
+    page: Int
+    pageSize: Int
+  ): DeviceList
+
+  deviceDetail(tenantId: String!, deviceId: String!): DeviceDetail
+
+  listDeviceHistory(
+    tenantId: String!
+    deviceId: String!
+    page: Int
+    pageSize: Int
+  ): DeviceHistories
+
+  listAvailableActions(tenantId: String, stateId: String): [Action]
+}
+
+type Mutation {
+  assignAction(tenantId: String!, deviceId: String!, actionId: String!): Boolean
+}
